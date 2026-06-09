@@ -91,10 +91,96 @@ IM10: Adding Internet Route Within the Route Table
 
 IM11&12: Configuring & Confirming that the Route Table is Associated with the Subnet
 
+### Part 5: Creating a Security Group
 
+The last step before launching an instance was to create a Security Group for the instance. A Security Group is essentially a virtual firewall that controls inbound and outbound traffic for a specific instance or any other resource. 
+To create one, I went to the VPC dashboard and selected Security Groups, then "Create security group." I then configured the specifics for this security group. This included the name (Ubuntu-SSH-SG), the description (Allow SSH from my IP), and my VPC that I am associating it with. I then needed to create the inbound rule to specifiy with IP address would be able to use SSH to access the instance. The inbound rule is specified in the screenshot below (IM13). I then went back to the dashboard to confirm the Security Group was created (IM14). 
 
+<img width="1305" height="800" alt="image" src="https://github.com/user-attachments/assets/7216dafe-35e2-4a38-8c90-8ed6dd2c2843" />
 
+IM13: Creating a Security Group 
 
+<img width="1705" height="160" alt="image" src="https://github.com/user-attachments/assets/9e5a9ec3-0fd7-4dfa-9a28-97201e52e661" />
+
+IM14: Confirming that the Security Group was Created
+
+### Part 6: Launching Ubuntu EC2 Instance
+
+Now that my VPC was fully configured, I could launch my first instance in AWS. To launch one, I went to the search bar and typed "EC2" and opened the EC2 dashboard. I then selected launch instances to create one. 
+
+1. **CONFIGURING INSTANCE.** The first step was configuring which OS and type to use. I chose Ubuntu and specifically the 26.04 LTS as it was the latest version and free tier eligible (IM15).
+2. **CHOOSING INSTANCE TYPE.** For the type of Instance, I chose the t3.micro as it was free tier eligible (IM16).
+3. **CREATING A KEY PAIR.** This needed to be created as it was needed for SSH authentication later on. I named it CyberLab-Key and securely stored it after downloading (IM17).
+4. **CONFIGURING NETWORKING.** Now I needed to make sure this instance was in the correct network and subnet. I configured it to be under the VPC and subnet that was created earlier, as well as the security group (IM18).
+5. **CONFIGURING STORAGE.** I left the storage as the default it came with, which was 8 GB (IM19).
+6. **LAUNCHING INSTANCE.** Now that the instance was configured, I launched it and waited for the signal that it launched successfully (IM20). Once it did, I went to the EC2 dashboard to confirm it was created and running, as well as the public IP showing up (IM21).
+
+<img width="972" height="760" alt="image" src="https://github.com/user-attachments/assets/a90ff2a2-dc68-4e41-941f-2ae91b5faebf" />
+
+IM15: Configuring Instance OS 
+
+<img width="966" height="177" alt="Screenshot 2026-06-07 110733" src="https://github.com/user-attachments/assets/372eb0c7-2901-4af9-91c9-085423b96b54" />
+
+IM16: Configuring Instance Type
+
+<img width="966" height="143" alt="Screenshot 2026-06-07 110739" src="https://github.com/user-attachments/assets/644a1118-e3f5-4ee9-9528-f796dfa745d7" />
+
+IM17: Creating Key Pair for SSH Login
+
+<img width="963" height="523" alt="image" src="https://github.com/user-attachments/assets/f24dd2de-551e-4057-a332-63a5616cebc4" />
+
+IM18: Configuring Network Settings for Instance
+
+<img width="967" height="401" alt="Screenshot 2026-06-07 110754" src="https://github.com/user-attachments/assets/3dab546d-adae-4124-ac7e-975587ef6dfc" />
+
+IM19: Configuring Storage Settings (default) for Instance
+
+<img width="1883" height="172" alt="Screenshot 2026-06-07 110916" src="https://github.com/user-attachments/assets/13c3f544-a12c-4f1c-8ed4-8a72978b61d2" />
+<img width="1665" height="160" alt="Screenshot 2026-06-07 110959" src="https://github.com/user-attachments/assets/9924d31c-b3c8-4318-a302-84decf1c85b9" />
+
+IM20&21: Instance Created and running with Public IP
+
+### Part 7: Using SSH to Launch the Instance
+
+Now that the Instance was created, I needed to get into it. I needed to use SSH using the key pair that was created earlier to reach it. First, I opened up PowerShell on my host and navigated to my documents directory, where the key was, then used the dir command to confirm the file exists, which it did. (IM22). I then ran the command "ssh -i .\CyberLab-Key.pem ubuntu@98.86.166.22" to log in. This command uses SSH and the key pair to log in to the Ubuntu instance with the public IP address associated with the instance. Once I ran the command, I was logged in to the Ubuntu instance with the username as the IP it gave me within the subnet (IM23). To confirm everything was set up correctly, I ran a few commands, including whoami, which returned ubuntu, hostname, which returned the same IP as my username, and ip a to confirm the network interfaces were correct (IM24).
+
+<img width="534" height="222" alt="Screenshot 2026-06-07 111529" src="https://github.com/user-attachments/assets/93523ced-307d-4c6e-9ec0-dfa228a73442" />
+
+IM22: confirming that the Key Pair file Exists
+
+<img width="594" height="451" alt="Screenshot 2026-06-07 112456" src="https://github.com/user-attachments/assets/478d140a-47fe-49e0-859b-2537334fd194" />
+
+IM23: Using SSH to Log in to Ubuntu Instance
+
+<img width="754" height="319" alt="Screenshot 2026-06-07 113029" src="https://github.com/user-attachments/assets/51d0009a-dbe2-42d5-bb34-332a20434334" />
+
+IM24: Running Basic Linux Commands to Confirm Correct Setup
+
+### Part 8: Configuring Ubuntu Instance with Basic Linux Administration
+
+Now that I was in the instance, I wanted to install some basic tools and run some other commands within the instance. The main things that I did were run the commands "sudo apt update" and "sudo apt upgrade -y" to install the latest package info and latest updates for the system (IM25). I also installed some network and web tools that are common commands within Linux as well. 
+
+<img width="909" height="463" alt="Screenshot 2026-06-07 113807" src="https://github.com/user-attachments/assets/5cabe42f-b3a0-4bf2-93f9-b7de795f7385" />
+
+IM25: Installing Latest Packages and Updates Within Ubuntu Instance
+
+### Part 9: Testing Security Group
+
+The last part of this Project was to see if the security Group I created was working correctly. To test this, I temporarily disabled the inbound rule that I created earlier and tried to connect via SSH. As expected, it failed to connect. I then re-enabled the rule and tried connecting again, and it worked, confirming that the rule was working as intended (IM26). 
+
+<img width="595" height="447" alt="Screenshot 2026-06-07 114401" src="https://github.com/user-attachments/assets/f29590ba-7d23-4ef0-a5f9-1e2ee792ffbc" />
+
+IM26: Testing Security Group Rule for SHH Log in
+
+## Conclusion
+
+This lab was successful in demonstrating the foundational concepts of AWS cloud networking, infrastructure deployment, and cloud security through the creation of a custom cloud environment. Throughout the project, key networking components were configured, including a Virtual Private Cloud (VPC), public subnet, Internet Gateway, and route table, providing a practical understanding of how network connectivity is established within AWS. These configurations helped reinforce how traditional networking concepts are applied in cloud environments.
+
+In addition to building the network infrastructure, this project provided hands-on experience with deploying and managing an Ubuntu EC2 instance. Secure remote administration was implemented using SSH key-based authentication and Security Groups configured with least-privilege access controls. Testing Security Group rules further demonstrated how cloud firewalls regulate inbound traffic and protect cloud resources from unauthorized access.
+
+The Linux administration portion of the lab introduced basic server management tasks, including system updates, package installation, and network connectivity verification. These activities helped bridge cloud infrastructure concepts with practical system administration skills commonly used in enterprise environments.
+
+Overall, this project strengthened my understanding of AWS networking services, EC2 deployment, cloud security controls, and Linux administration. It provided valuable experience designing and securing a basic cloud infrastructure while establishing a foundation for future projects involving advanced AWS networking, cloud monitoring, server hardening, and security-focused cloud architectures.
 
 
 
