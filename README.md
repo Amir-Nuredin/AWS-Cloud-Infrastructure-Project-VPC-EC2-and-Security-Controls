@@ -1,4 +1,4 @@
-# AWS Cloud Infrastructure Project VPC EC2 and Security Controls
+# AWS Cloud Infrastructure Project: VPC EC2 and Security Controls
 
 ## Objective
 
